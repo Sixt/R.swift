@@ -49,6 +49,7 @@ struct EnvironmentKeys {
   static let xcodeproj = "PROJECT_FILE_PATH"
   static let infoPlistFile = "INFOPLIST_FILE"
   static let codeSignEntitlements = "CODE_SIGN_ENTITLEMENTS"
+  static let resourceBundleIdentifier = "R_SWIFT_RESOURCE_BUNDLE_IDENTIFIER"
 
   static let buildProductsDir = SourceTreeFolder.buildProductsDir.rawValue
   static let developerDir = SourceTreeFolder.developerDir.rawValue
@@ -124,6 +125,7 @@ let generate = command(
   let xcodeprojPath = try processInfo.environmentVariable(name: EnvironmentKeys.xcodeproj)
   let targetName = try processInfo.environmentVariable(name: EnvironmentKeys.target)
   let bundleIdentifier = try processInfo.environmentVariable(name: EnvironmentKeys.bundleIdentifier)
+  let resourceBundleIdentifier = try? processInfo.environmentVariable(name: EnvironmentKeys.resourceBundleIdentifier)
   let productModuleName = try processInfo.environmentVariable(name: EnvironmentKeys.productModuleName)
   let infoPlistFile = try processInfo.environmentVariable(name: EnvironmentKeys.infoPlistFile)
   let codeSignEntitlements = processInfo.environment[EnvironmentKeys.codeSignEntitlements]
@@ -206,6 +208,7 @@ let generate = command(
     xcodeprojURL: URL(fileURLWithPath: xcodeprojPath),
     targetName: targetName,
     bundleIdentifier: bundleIdentifier,
+    resourceBundleIdentifier: resourceBundleIdentifier,
     productModuleName: productModuleName,
     infoPlistFile: URL(fileURLWithPath: infoPlistFile),
     codeSignEntitlements: codeSignEntitlements.map { URL(fileURLWithPath: $0) },

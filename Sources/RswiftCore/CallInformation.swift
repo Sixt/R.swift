@@ -22,6 +22,7 @@ public struct CallInformation {
   let xcodeprojURL: URL
   let targetName: String
   let bundleIdentifier: String
+  let resourceBundleIdentifier: String?
   let productModuleName: String
   let infoPlistFile: URL
   let codeSignEntitlements: URL?
@@ -48,6 +49,7 @@ public struct CallInformation {
     xcodeprojURL: URL,
     targetName: String,
     bundleIdentifier: String,
+    resourceBundleIdentifier: String?,
     productModuleName: String,
     infoPlistFile: URL,
     codeSignEntitlements: URL?,
@@ -73,6 +75,7 @@ public struct CallInformation {
     self.xcodeprojURL = xcodeprojURL
     self.targetName = targetName
     self.bundleIdentifier = bundleIdentifier
+    self.resourceBundleIdentifier = resourceBundleIdentifier
     self.productModuleName = productModuleName
     self.infoPlistFile = infoPlistFile
     self.codeSignEntitlements = codeSignEntitlements

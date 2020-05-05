@@ -9,16 +9,56 @@
 import Foundation
 
 extension Struct {
-  func addingInternalProperties(forBundleIdentifier bundleIdentifier: String) -> Struct {
+  func addingInternalProperties(forResourceBundleIdentifier bundleIdentifier: String?) -> Struct {
+
+    let bundleLet: Let
+    var bundleFunction: Function?
+
+    if let bundleIdentifier = bundleIdentifier {
+        bundleLet = Let(
+            comments: [],
+            accessModifier: .internalLevel,
+            isStatic: true,
+            name: "hostingBundle",
+            typeDefinition: .inferred(Type._Bundle),
+            value: "makeHostingBundle()"
+        )
+
+        bundleFunction = Function(
+          availables: [],
+          comments: [],
+          accessModifier: .filePrivate,
+          isStatic: true,
+          name: "makeHostingBundle",
+          generics: nil,
+          parameters: [],
+          doesThrow: false,
+          returnType: Type._Bundle,
+          body: """
+            guard let path = Bundle(for: R.Class.self).path(forResource: "\(bundleIdentifier)", ofType: "bundle") else {
+              fatalError("Path for \(bundleIdentifier) bundle not found!")
+            }
+            guard let bundle = Bundle(path: path) else {
+              fatalError("Unable to instantiate \(bundleIdentifier) bundle!")
+            }
+
+            return bundle
+            """,
+          os: []
+        )
+    } else {
+        bundleLet = Let(
+            comments: [],
+            accessModifier: .internalLevel,
+            isStatic: true,
+            name: "hostingBundle",
+            typeDefinition: .inferred(Type._Bundle),
+            value: "Bundle(for: R.Class.self)"
+        )
+    }
 
     let internalProperties = [
-      Let(
-        comments: [],
-        accessModifier: .filePrivate,
-        isStatic: true,
-        name: "hostingBundle",
-        typeDefinition: .inferred(Type._Bundle),
-        value: "Bundle(for: R.Class.self)"),
+      bundleLet,
       Let(
         comments: [],
         accessModifier: .filePrivate,
@@ -33,6 +73,7 @@ extension Struct {
     ]
 
     let internalFunctions = [
+      bundleFunction,
       Function(
         availables: [],
         comments: ["Load string from Info.plist file"],
@@ -131,7 +172,7 @@ extension Struct {
           """,
         os: []
       )
-    ]
+        ].compactMap { $0 }
 
     var externalStruct = self
     externalStruct.properties.append(contentsOf: internalProperties)
